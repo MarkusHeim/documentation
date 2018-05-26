@@ -190,8 +190,12 @@ iface br0 inet manual
 bridge_ports eth0 wlan0
 
 ```    
+You need to edit the hostapd configuration file, located at /etc/hostapd/hostapd.conf, to add the various parameters for your wireless network. After initial install, this will be a new/empty file.
 
-The access point setup is almost the same as that shown in the previous section. Follow the instructions above to set up the `hostapd.conf` file, but add `bridge=br0` below the `interface=wlan0` line, and remove or comment out the driver line. The passphrase must be between 8 and 64 characters long. 
+```
+sudo nano /etc/hostapd/hostapd.conf
+```
+Add the information below to the configuration file. This configuration assumes we are using channel 7, with a network name of NameOfNetwork, and a password AardvarkBadgerHedgehog. Note that the name and password should **not** have quotes around them. The passphrase should be between 8 and 64 characters in length.
 
 ```
 interface=wlan0
@@ -210,7 +214,16 @@ wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 ```
+We now need to tell the system where to find this configuration file.
 
+```
+sudo nano /etc/default/hostapd
+```
+Find the line with #DAEMON_CONF, and replace it with this:
+
+```
+DAEMON_CONF="/etc/hostapd/hostapd.conf"
+```
 Now reboot the Raspberry Pi.
 
 There should now be a functioning bridge between the wireless LAN and the Ethernet connection on the Raspberry Pi, and any device associated with the Raspberry Pi access point will act as if it is connected to the access point's wired Ethernet.
